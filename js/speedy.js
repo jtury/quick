@@ -1,13 +1,11 @@
 let httpRequest;
 let cache = [];
-
-
-//TODO: Fix bug with # links!
+const parser = new DOMParser();
 
 function fetch_information(url) {
     let index = cache.findIndex(element => element[0].includes(url));
     if (index === -1) {
-        url = url + '/index.json';
+        url += '/index.html';
         httpRequest = new XMLHttpRequest();
 
         if (!httpRequest) {
@@ -19,8 +17,11 @@ function fetch_information(url) {
             if (httpRequest.status === 200) {
                 cache.push(
                     [
-                        httpRequest.responseURL.replace("index.json", ""),
-                        JSON.parse(httpRequest.responseText)
+                        httpRequest.responseURL.replace("index.html", ""),
+                        {
+                            "title": parser.parseFromString(httpRequest.responseText, "text/html").getElementsByTagName("title")[0].innerHTML,
+                            "page_content": parser.parseFromString(httpRequest.responseText, "text/html").getElementById("page").innerHTML
+                        }
                     ]
                 );
             } else {
