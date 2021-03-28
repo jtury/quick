@@ -1,3 +1,4 @@
+// ©2021 James Tury. Licensed under the MIT license. Contribute at https://github.com/jtury/quick
 let httpRequest;
 let cache = [];
 const parser = new DOMParser();
@@ -7,11 +8,9 @@ function fetch_information(url) {
     if (index === -1) {
         url += '/index.html';
         httpRequest = new XMLHttpRequest();
-
         if (!httpRequest) {
             return false;
         }
-
         httpRequest.onreadystatechange = function () {
             if (httpRequest.readyState === XMLHttpRequest.DONE) {
             if (httpRequest.status === 200) {
@@ -45,7 +44,7 @@ function attach_hooks() { // this function enables prefetch links on all anchor 
                     if (element.matches(':hover')) {
                         fetch_information(element.href)
                     }
-                }, 65);
+                }, 85);
             });
             element.addEventListener('pointerdown', function (event) {
                 event.preventDefault();
@@ -69,7 +68,6 @@ function init() {
         "title": document.title,
         "page_content": document.getElementById("page").innerHTML
     }]);
-
     let url = cache[0][0];
     let title = cache[0][1]["title"];
     let html = cache[0][1]["page_content"];
