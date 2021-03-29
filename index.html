@@ -9,7 +9,7 @@
         <link rel="preload" href="assets/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="assets/style.css"></noscript>
     </head>
-    <body onload="init()">
+    <body>
         <section id="page">
             <h1>
                 “The Time Machine” by H.&nbsp;G.&nbsp;Wells
@@ -33,6 +33,6 @@
             </ul>
             <a>All Chapter text is from <a href="https://www.gutenberg.org/ebooks/35" target="_blank">Project Gutenberg</a></a>
         </section>
-        <script src="https://raw.githubusercontent.com/jtury/quick/master/quick.js" defer></script>
+        <script src="https://raw.githubusercontent.com/jtury/quick/master/quick.js" onload="init()" defer></script>
     </body>
 </html>
