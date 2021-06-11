@@ -1,6 +1,8 @@
 // ©2021 James Tury. Licensed under the MIT license. Contribute at https://github.com/jtury/quick
+"use strict";
 let httpRequest;
 let cache = [];
+let tagName = "main";
 const parser = new DOMParser();
 function fetch_information(url) {
     let index = cache.findIndex(element => element[0].includes(url));
@@ -18,12 +20,11 @@ function fetch_information(url) {
                         httpRequest.responseURL.replace("index.html", ""),
                         {
                             "title": parser.parseFromString(httpRequest.responseText, "text/html").getElementsByTagName("title")[0].innerHTML,
-                            "page_content": parser.parseFromString(httpRequest.responseText, "text/html").getElementById("page").innerHTML
+                            "page_content": parser.parseFromString(httpRequest.responseText, "text/html").getElementsByTagName(tagName)[0].innerHTML
                         }
                     ]
                 );
             } else {
-                alert("Something went wrong. Try disabling javascript and try again.");
                 return false;
             }
         }
@@ -33,7 +34,7 @@ function fetch_information(url) {
     }
     return true;
 }
-function special_keys(event) { // fixes a bug where common keyboard shortcuts (command-click, etc.) were ignored and did not funtion properly
+function special_keys(event) { // fixes a bug where common keyboard shortcuts (command-click, etc.) were ignored and did not function properly
     return event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
 }
 function attach_hooks() { // this function enables prefetch links on all anchor tags with an href specified
@@ -67,23 +68,12 @@ function attach_hooks() { // this function enables prefetch links on all anchor 
         }
     });
 }
-function init() {
-    cache.push([document.location.href, {
-        "title": document.title,
-        "page_content": document.getElementById("page").innerHTML
-    }]);
-    let url = cache[0][0];
-    let title = cache[0][1]["title"];
-    let html = cache[0][1]["page_content"];
-    window.history.replaceState({title, html},title, url);
-    attach_hooks();
-}
 function display_page(index) {
     let url = cache[index][0];
     let title = cache[index][1]["title"];
     let html = cache[index][1]["page_content"];
     document.title = title;
-    document.getElementById("page").innerHTML = html;
+    document.getElementsByTagName(tagName)[0].innerHTML = html;
     window.history.pushState({title, html},title, url);
 }
 window.onpopstate = function(event) {
@@ -91,7 +81,18 @@ window.onpopstate = function(event) {
     if (json !== 'null') {
         json = JSON.parse(json);
         document.title = json["title"];
-        document.getElementById("page").innerHTML = json["html"];
+        document.getElementsByTagName(tagName)[0].innerHTML = json["html"];
         attach_hooks();
     }
 };
+window.onload = function init() {
+    cache.push([document.location.href, {
+        "title": document.title,
+        "page_content": document.getElementsByTagName(tagName)[0].innerHTML
+    }]);
+    let url = cache[0][0];
+    let title = cache[0][1]["title"];
+    let html = cache[0][1]["page_content"];
+    window.history.replaceState({title, html},title, url);
+    attach_hooks();
+}
