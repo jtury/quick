@@ -35,4 +35,4 @@ Now that you have the script installed, you will need to wrap the contents of al
 ```
 Note that there can only be one `<main>` tag present in a file for `quick.js` to work correctly.
 
-<a name="fn-1">1</a>: About 3.9kb unmodified, 1.8kb minified,  (as of Jun 11) <a href="#fn-1-ref">↩︎&#xFE0E;</a>
+<a name="fn-1">1</a>: About 3.9kb unmodified, 2.5kb minified,  (as of Jun 11) <a href="#fn-1-ref">↩︎&#xFE0E;</a>
