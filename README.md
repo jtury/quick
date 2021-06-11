@@ -1,18 +1,32 @@
 # Quick
 ### [See an example here](https://jtury.github.io/quick/) (try clicking on the links)
-This is an experimental repository that shows an implementation of a fast ajax-based preloading system for the web. It uses ajax to preload page information on hover or when a user starts clicking a link, and immediately updates the DOM with this data when a click is registered. A cache is kept to ensure that no request is made twice in the same session. This software regresses to standard site loading if javascript is disabled. This software's use cases are as follows:
-- Personal blogs
-- Article lists
-- Other template-based content
+## The short of it:
+`quick.js` is a slim javascript file that automatically implements a page prefetching and visually-instantaneous load system to all local URLs on your site. The behavior of outbound links is unchanged. Keyboard shortcuts like command-click or shift-click are respected.
+
+## The long of it:
+This is an experimental repository that shows an implementation of a fast ajax-based preloading system for the web. It uses ajax to preload page information on hover or when a user starts clicking a link, and immediately updates the DOM with this data when a click is registered. A cache is kept to ensure that no request is made twice in the same session. This software regresses to default site loading behavior if javascript is disabled.
 
 As of right now, this is experimental and subject to change. Contributions are welcome.
 
-## Goals
-- [ ] Toolchain for converting a directory of `.md` files into a quick-compatible site
-- [ ] More support for edge cases
-- [ ] Faster load times
-  - [ ] Options for load behavior (e.g loading on `pointerdown`)
-- [ ] Longer cache duration
+## Implementation guide:
+In your website, put a script tag linking to `quick.min.js` before `</body>` like so:
+```html
+...
+<script src="https://cdn.jsdelivr.net/gh/jtury/quick/quick.min.js"></script>
+</body>
+```
+Now that you have the script installed, you will need to wrap the contents of your page (beginning at `<body>` and ending just before any scripts) in a `<main id="page">` tag, like so:
+```html
+...
+<body>
+  <main id="page">
+    <!--
+      Your page contents here
+    -->
+  </main>
+  <script src="https://cdn.jsdelivr.net/gh/jtury/quick/quick.min.js"></script>
+</body>
+```
+Note that you can replace the `<main>` tag with any other tag[^3] as long as the id remains the same.
 
-## Inspiration
-This project takes inspiration from GatsbyJS's page prefetching functionality.
+[^3]: It's not recommended, so if you have any doubt use the default

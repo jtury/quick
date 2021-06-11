@@ -2,7 +2,6 @@
 let httpRequest;
 let cache = [];
 const parser = new DOMParser();
-
 function fetch_information(url) {
     let index = cache.findIndex(element => element[0].includes(url));
     if (index === -1) {
@@ -34,7 +33,9 @@ function fetch_information(url) {
     }
     return true;
 }
-
+function special_keys(event) { // fixes a bug where common keyboard shortcuts (command-click, etc.) were ignored and did not funtion properly
+    return event.shiftKey || event.ctrlKey || event.altKey || event.metaKey
+}
 function attach_hooks() { // this function enables prefetch links on all anchor tags with an href specified
     let anchor_array = Array.from(document.getElementsByTagName("a"));
     anchor_array.forEach(element => {
@@ -47,22 +48,25 @@ function attach_hooks() { // this function enables prefetch links on all anchor 
                 }, 85);
             });
             element.addEventListener('pointerdown', function (event) {
-                event.preventDefault();
-                fetch_information(element.href);
+                if (!special_keys(event)) {
+                    event.preventDefault();
+                    fetch_information(element.href);
+                }
             });
             element.addEventListener('click', function (event) {
-                event.preventDefault();
-                if (fetch_information(element.href) === true) {
-                    let url = element.href;
-                    display_page(cache.findIndex(element => element[0].includes(url)));
-                } else {
-                    window.location = element.href;
+                if (!special_keys(event)) {
+                    event.preventDefault();
+                    if (fetch_information(element.href) === true) {
+                        let url = element.href;
+                        display_page(cache.findIndex(element => element[0].includes(url)));
+                    } else {
+                        window.location = element.href;
+                    }
                 }
             });
         }
     });
 }
-
 function init() {
     cache.push([document.location.href, {
         "title": document.title,
@@ -74,20 +78,16 @@ function init() {
     window.history.replaceState({title, html},title, url);
     attach_hooks();
 }
-
 function display_page(index) {
     let url = cache[index][0];
     let title = cache[index][1]["title"];
     let html = cache[index][1]["page_content"];
-
     document.title = title;
     document.getElementById("page").innerHTML = html;
     window.history.pushState({title, html},title, url);
 }
-
 window.onpopstate = function(event) {
     let json = JSON.stringify(event.state);
-
     if (json !== 'null') {
         json = JSON.parse(json);
         document.title = json["title"];
