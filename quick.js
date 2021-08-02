@@ -6,8 +6,12 @@ let tagName = "main";
 const parser = new DOMParser();
 function fetch_information(url) {
     let index = cache.findIndex(element => element[0].includes(url));
+    let isFolder = false;
     if (index === -1) {
-        url += '/index.html';
+        if (url.slice(-5) != ".html") {
+            isFolder = true;
+            url += '/index.html';
+        }
         httpRequest = new XMLHttpRequest();
         if (!httpRequest) {
             return false;
@@ -15,9 +19,16 @@ function fetch_information(url) {
         httpRequest.onreadystatechange = function () {
             if (httpRequest.readyState === XMLHttpRequest.DONE) {
             if (httpRequest.status === 200) {
+                let actualResponseURL = {
+                    if (isFolder) {
+                        return httpRequest.responseURL.replace("index.html", "");
+                    } else {
+                        return httpRequest.responseURL;
+                    }
+                }
                 cache.push(
                     [
-                        httpRequest.responseURL.replace("index.html", ""),
+                        actualResponseURL,
                         {
                             "title": parser.parseFromString(httpRequest.responseText, "text/html").getElementsByTagName("title")[0].innerHTML,
                             "page_content": parser.parseFromString(httpRequest.responseText, "text/html").getElementsByTagName(tagName)[0].innerHTML
